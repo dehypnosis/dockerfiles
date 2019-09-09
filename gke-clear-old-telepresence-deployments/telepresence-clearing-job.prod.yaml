@@ -1,0 +1,23 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: telepresence-clearing-job
+  namespace: kube-system
+spec:
+  schedule: "*/30 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: tiller
+          restartPolicy: Never
+          containers:
+            - name: job
+              image: gcr.io/qmit-pro/gke-clear-old-telepresence-deployments
+              env:
+                - name: GCP_PROJECT_NAME
+                  value: qmit-pro
+                - name: GKE_CLUSTER_ZONE
+                  value: asia-northeast1-a
+                - name: GKE_CLUSTER_NAME
+                  value: prod
